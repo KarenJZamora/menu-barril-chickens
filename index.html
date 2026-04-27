@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú Barril Chickens - Medellín</title>
+    <style>
+        /* CONFIGURACIÓN GENERAL */
+        :root {
+            --rojo: #dc2626;
+            --oscuro: #0f172a;
+            --verde-wa: #25D366;
+            --gris-agenda: #475569; /* Gris para Agenda */
+            --gris-fondo: #f8fafc;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--gris-fondo);
+            margin: 0;
+            padding-bottom: 80px;
+            color: #334155;
+        }
+
+        /* VENTANA EMERGENTE (MODAL) */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 400px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            border: 4px solid var(--rojo);
+            animation: popIn 0.3s ease-out;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-icon { font-size: 40px; margin-bottom: 10px; display: block; }
+        
+        .modal-title {
+            font-size: 22px;
+            font-weight: 900;
+            color: var(--rojo);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            line-height: 1.2;
+        }
+
+        .modal-text {
+            font-size: 15px;
+            color: #475569;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .modal-btn {
+            background-color: var(--oscuro);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+
+        /* BARRA INFORMATIVA */
+        .top-ticker {
+            background-color: var(--oscuro);
+            color: white;
+            padding: 10px 0;
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .ticker-content {
+            display: inline-block;
+            padding-left: 100%;
+            animation: marquee 30s linear infinite;
+        }
+
+        @keyframes marquee {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-100%, 0); }
+        }
+
+        /* CABECERA */
+        header {
+            background-color: white;
+            text-align: center;
+            padding: 30px 20px;
+            border-bottom: 4px solid var(--rojo);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .logo-img {
+            max-width: 200px;
+            width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto 15px auto;
+        }
+
+        .slogan {
+            background-color: #f1f5f9;
+            display: inline-block;
+            padding: 6px 18px;
+            border-radius: 25px;
+            font-weight: 800;
+            font-size: 13px;
+            text-transform: uppercase;
+            color: #475569;
+        }
+
+        /* AVISO DE AGENDA */
+        .agenda-alert {
+            background-color: #dcfce7;
+            color: #15803d;
+            padding: 12px 15px;
+            border-radius: 15px;
+            font-size: 13px;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 15px;
+            border: 1px solid #86efac;
+            line-height: 1.5;
+        }
+
+        .agenda-highlight {
+            display: block;
+            font-weight: 900;
+            font-size: 14px;
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+
+        /* CONTENEDOR */
+        .container {
+            max-width: 550px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+            border: 1px solid #e2e8f0;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover { transform: translateY(-5px); }
+
+        .card-header {
+            background: var(--oscuro);
+            color: white;
+            padding: 18px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 900;
+            text-transform: uppercase;
+            margin: 0;
+            line-height: 1.2;
+            text-align: left;
+        }
+
+        .badge {
+            background: #facc15;
+            color: var(--oscuro);
+            font-size: 10px;
+            font-weight: 900;
+            padding: 5px 12px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .card-body { padding: 25px; }
+
+        .price-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 15px;
+        }
+
+        .price-tag {
+            font-size: 32px;
+            font-weight: 900;
+            color: var(--rojo);
+        }
+
+        .delivery-text {
+            font-size: 11px;
+            color: #64748b;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .description {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #475569;
+            margin-bottom: 20px;
+        }
+
+        .includes-list {
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+        }
+
+        .includes-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            font-weight: 800;
+            color: #94a3b8;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .items-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /* EVENTOS */
+        .event-intro {
+            font-style: italic;
+            color: #64748b;
+            font-size: 15px;
+            text-align: left;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+        
+        .event-section-title {
+            font-weight: 900;
+            color: var(--oscuro);
+            text-transform: uppercase;
+            font-size: 13px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .event-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 20px 0;
+        }
+
+        .event-list li {
+            font-size: 14px;
+            margin-bottom: 8px;
+            color: #334155;
+        }
+
+        .event-list li strong {
+            color: var(--rojo);
+        }
+
+        /* BOTÓN DE ACCIÓN (Verde por defecto) */
+        .btn-order {
+            background-color: var(--verde-wa);
+            color: white;
+            width: 100%;
+            border: none;
+            padding: 18px;
+            border-radius: 15px;
+            font-size: 16px;
+            font-weight: 900;
+            text-transform: uppercase;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            box-shadow: 0 4px 14px 0 rgba(37, 211, 102, 0.39);
+            transition: all 0.2s ease;
+        }
+        
+        /* MODO AGENDA (GRIS) */
+        .btn-order.agenda-mode {
+            background-color: var(--gris-agenda);
+            box-shadow: 0 4px 14px 0 rgba(71, 85, 105, 0.39);
+        }
+
+        .btn-order:active { transform: scale(0.98); }
+
+        /* INFO PAGOS */
+        .shipping-info {
+            text-align: center;
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            margin-top: 40px;
+        }
+
+        .payment-section { margin-top: 15px; padding-top: 15px; border-top: 1px solid #f1f5f9; }
+        .payment-labels { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+        .pay-pill { font-size: 11px; font-weight: 800; padding: 6px 14px; border-radius: 8px; color: white; }
+
+        /* FOOTER */
+        footer {
+            background: var(--oscuro);
+            color: #94a3b8;
+            text-align: center;
+            padding: 50px 20px;
+            margin-top: 60px;
+        }
+
+        .social-container { display: flex; justify-content: center; gap: 15px; margin: 25px 0; flex-wrap: wrap; }
+        
+        .social-link {
+            background: #1e293b;
+            color: white;
+            text-decoration: none;
+            padding: 12px 18px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid #334155;
+            transition: all 0.3s ease;
+        }
+        .social-link:hover { background: white; color: var(--oscuro); transform: translateY(-3px); }
+        .social-link.insta:hover { color: #E1306C; border-color: #E1306C; }
+        .social-link.tiktok:hover { color: black; border-color: black; }
+        .social-link.facebook:hover { color: #1877F2; border-color: #1877F2; }
+        .social-icon { width: 18px; height: 18px; fill: currentColor; }
+
+        /* FLOTANTE */
+        .wa-float {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: var(--verde-wa);
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            border: 3px solid white;
+            z-index: 1001;
+        }
+        .wa-float svg { width: 35px; height: 35px; fill: white; }
+    </style>
+</head>
+<body>
+
+    <!-- VENTANA EMERGENTE (MODAL) INTELIGENTE -->
+    <div id="dynamic-modal" class="modal-overlay">
+        <div class="modal-content">
+            <span id="modal-icon" class="modal-icon">👋</span>
+            <h2 id="modal-title" class="modal-title">TITULO</h2>
+            <p id="modal-text" class="modal-text">Texto del mensaje...</p>
+            <button class="modal-btn" onclick="cerrarModal()">
+                ENTENDIDO, GRACIAS
+            </button>
+        </div>
+    </div>
+
+    <!-- BARRA SUPERIOR DESPLAZABLE -->
+    <div class="top-ticker">
+        <div class="ticker-content">
+            🔥 ¡NUEVO HORARIO! AHORA DE VIERNES A DOMINGO (12:00M - 7:00PM) • 📍 DOMICILIOS EN MEDELLÍN • 📲 WHATSAPP: 324 539 9955 • 🍖 EXPERIENCIA BARRIL CHICKENS: Servicio Privado & Catering - El fuego en tu celebración 🔥
+        </div>
+    </div>
+
+    <header>
+        <img src="logo.png" alt="Barril Chickens" class="logo-img">
+        <div class="slogan">El auténtico sabor al barril</div>
+        <div style="margin-top: 15px; font-weight: 700; font-size: 14px; color: #64748b;">📍 Medellín, Colombia</div>
+        
+        <div class="agenda-alert">
+            Ahora pide todo el fin de semana. (Viernes a Domingo: 12pm - 7pm)
+            <span class="agenda-highlight">🎉 ¡YA ABRIMOS LOS SÁBADOS!</span>
+        </div>
+    </header>
+
+    <div class="container">
+        
+        <!-- POLLO ENTERO -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Pollo Entero</h2>
+                <span class="badge">⭐ El Más Pedido</span>
+            </div>
+            <div class="card-body">
+                <div class="price-box">
+                    <div class="description" style="margin-bottom: 0; width: 60%;">
+                        Pollo entero asado lentamente al barril. Increíblemente jugoso, suave y con ese sabor ahumado inigualable.
+                    </div>
+                    <div style="text-align: right;">
+                        <div class="price-tag">$65.000</div>
+                        <div class="delivery-text">+ Domicilio</div>
+                    </div>
+                </div>
+                <div class="includes-list">
+                    <span class="includes-title">Tu pedido incluye:</span>
+                    <ul class="items-grid">
+                        <li>✅ Ensalada de papa</li>
+                        <li>✅ Arepas de mote</li>
+                        <li>✅ Guacamole</li>
+                        <li>✅ Salsa dulce de la casa</li>
+                    </ul>
+                </div>
+                <button id="btn-entero" onclick="pedirDomicilio('Pollo Entero', '65.000')" class="btn-order">
+                    Realizar Pedido
+                </button>
+            </div>
+        </div>
+
+        <!-- MEDIO POLLO -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Medio Pollo</h2>
+            </div>
+            <div class="card-body">
+                <div class="price-box">
+                    <div class="description" style="margin-bottom: 0; width: 60%;">
+                        Media unidad conservando toda su jugosidad y el toque artesanal del barril.
+                    </div>
+                    <div style="text-align: right;">
+                        <div class="price-tag">$38.000</div>
+                        <div class="delivery-text">+ Domicilio</div>
+                    </div>
+                </div>
+                <div class="includes-list">
+                    <span class="includes-title">Tu pedido incluye:</span>
+                    <ul class="items-grid">
+                        <li>✅ Ensalada de papa</li>
+                        <li>✅ Arepas de mote</li>
+                        <li>✅ Guacamole</li>
+                        <li>✅ Salsa dulce de la casa</li>
+                    </ul>
+                </div>
+                <button id="btn-medio" onclick="pedirDomicilio('Medio Pollo', '38.000')" class="btn-order">
+                    Realizar Pedido
+                </button>
+            </div>
+        </div>
+
+        <!-- EVENTOS Y ASADOS -->
+        <div class="card" style="border: 2px solid var(--rojo); background: #fffafb;">
+            <div class="card-header" style="background: var(--rojo);">
+                <h2 class="card-title">Momentos al Barril para tus Eventos</h2>
+            </div>
+            <div class="card-body">
+                <p style="font-weight: 900; color: var(--oscuro); margin-top: 0; font-size: 16px;">Tu evento, tu menú</p>
+                
+                <div class="event-intro">
+                    En Barril Chickens, no creemos en menús rígidos, creemos en momentos memorables. Cuéntanos qué quieres experimentar y nosotros encendemos el fuego.
+                </div>
+
+                <div style="background: #fff0f0; padding: 15px; border-radius: 12px; margin-bottom: 20px;">
+                    <span class="event-section-title" style="color:var(--rojo);">🔥 ¿Cómo funciona?</span>
+                    <ul class="event-list" style="margin-bottom:0;">
+                        <li><strong>1. Cuéntanos tu idea:</strong> Invitados y antojo.</li>
+                        <li><strong>2. Personalizamos:</strong> Sugerimos la mezcla ideal.</li>
+                        <li><strong>3. Encendemos el Barril:</strong> Llevamos el sabor a tu mesa.</li>
+                    </ul>
+                </div>
+
+                <button onclick="cotizarEvento()" class="btn-order" style="background: var(--oscuro);">
+                    Cotizar mi Evento
+                </button>
+            </div>
+        </div>
+
+        <!-- INFO DE PAGO Y DOMICILIO -->
+        <div class="shipping-info">
+            <p style="font-weight: 900; margin: 0; color: var(--oscuro); text-transform: uppercase;">Domicilios en Medellín</p>
+            <p style="font-size: 13px; color: #64748b; margin-top: 5px;">Entregas vía InDrive.</p>
+            <div class="payment-section">
+                <span class="payment-title">Medios de Pago</span>
+                <div class="payment-labels">
+                    <span class="pay-pill" style="background:#200020;">Nequi</span>
+                    <span class="pay-pill" style="background:#FDDA24; color: black;">Bancolombia</span>
+                    <span class="pay-pill" style="background:#FF0000;">DaviPlata</span>
+                    <span class="pay-pill" style="background:#10b981;">Efectivo</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        <p style="font-weight: 800; color: white; letter-spacing: 2px;">BARRIL CHICKENS</p>
+        <p>© 2026 Medellín, Colombia.</p>
+        <div class="social-container">
+            <!-- Instagram -->
+            <a href="https://instagram.com/barrilchickens" target="_blank" class="social-link insta">
+                <svg class="social-icon" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            </a>
+            <!-- TikTok -->
+            <a href="https://tiktok.com/@barril.chickens" target="_blank" class="social-link tiktok">
+                <svg class="social-icon" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
+            </a>
+            <!-- Facebook -->
+            <a href="https://www.facebook.com/profile.php?id=61584019551695" target="_blank" class="social-link facebook">
+                <svg class="social-icon" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            </a>
+        </div>
+    </footer>
+
+    <!-- BOTÓN FLOTANTE -->
+    <a href="https://wa.me/573245399955" class="wa-float" target="_blank">
+        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    </a>
+
+    <!-- SCRIPT DE LÓGICA MODO AGENDA + POPUPS INTELIGENTES -->
+    <script>
+        const numeroWhatsApp = "573245399955";
+
+        function actualizarEstado() {
+            const ahora = new Date();
+            const dia = ahora.getDay(); // 0=Dom, 1=Lun, ..., 4=Jue, 5=Vie, 6=Sab
+            const hora = ahora.getHours();
+            const minutos = ahora.getMinutes();
+            
+            // LOGICA DE APERTURA: Abierto Viernes, Sábado y Domingo de 00:00 a 19:00
+            let abierto = false;
+            if (dia === 5 && hora < 19) abierto = true; // Viernes < 7PM
+            else if (dia === 6 && hora < 19) abierto = true; // Sábado < 7PM
+            else if (dia === 0 && hora < 19) abierto = true; // Domingo < 7PM
+
+            // ELEMENTOS DEL MODAL
+            const modal = document.getElementById('dynamic-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalText = document.getElementById('modal-text');
+            const modalIcon = document.getElementById('modal-icon');
+
+            // LÓGICA DE POPUPS
+            
+            // 1. Cierre Inminente (6:45 PM - 6:59 PM en días de servicio)
+            if ((dia === 5 || dia === 6 || dia === 0) && hora === 18 && minutos >= 45) {
+                if (!sessionStorage.getItem('avisoCierreVisto')) {
+                    modalIcon.textContent = "🏃💨";
+                    modalTitle.textContent = "¡CORRE!";
+                    modalText.innerHTML = "La cocina cierra en pocos minutos.<br><strong>¡Pide YA antes de que apaguemos el barril!</strong>";
+                    modal.style.display = 'flex';
+                    sessionStorage.setItem('avisoCierreVisto', 'true');
+                }
+            } 
+            // 2. Cerrado (Modo Agenda) - Solo si NO está abierto
+            else if (!abierto) {
+                if (!sessionStorage.getItem('avisoAgendaVisto')) {
+                    modalIcon.textContent = "🔥";
+                    
+                    // Si es Viernes noche, Sábado noche, o JUEVES TODO EL DÍA
+                    if ((dia === 5 && hora >= 19) || (dia === 6 && hora >= 19) || dia === 4) {
+                        modalTitle.textContent = "¡VOLVEMOS MAÑANA!";
+                        modalText.innerHTML = "Estamos recargando energías.<br>Pero no te quedes con el antojo: <strong>Puedes dejar tu pedido reservado desde YA.</strong>";
+                    } 
+                    // Domingo Noche (7pm+) y Lunes a Miércoles
+                    else {
+                        modalTitle.textContent = "¡VOLVEMOS EL VIERNES!"; 
+                        modalText.innerHTML = "Estamos recargando energías.<br>Pero no te quedes con el antojo: <strong>Puedes dejar tu pedido reservado desde YA.</strong>";
+                    }
+
+                    modal.style.display = 'flex';
+                    sessionStorage.setItem('avisoAgendaVisto', 'true');
+                }
+            }
+
+            // CAMBIO DE BOTONES
+            let textoBoton = "Realizar Pedido";
+            let claseExtra = "";
+
+            if (!abierto) {
+                claseExtra = "agenda-mode";
+                
+                if (dia >= 1 && dia <= 3) { // Lunes a Miércoles
+                    textoBoton = "📅 Agendar para el Viernes";
+                } else if (dia === 4) { // Jueves
+                    textoBoton = "📅 Agendar para Mañana";
+                } else if (dia === 5 && hora >= 19) { // Vie Noche
+                    textoBoton = "📅 Agendar para Mañana";
+                } else if (dia === 6 && hora >= 19) { // Sab Noche
+                    textoBoton = "📅 Agendar para Mañana";
+                } else if (dia === 0 && hora >= 19) { // Dom Noche
+                    textoBoton = "📅 Agendar para el Viernes";
+                }
+            }
+
+            const btnEntero = document.getElementById('btn-entero');
+            const btnMedio = document.getElementById('btn-medio');
+
+            if (btnEntero && btnMedio) {
+                btnEntero.textContent = textoBoton;
+                btnMedio.textContent = textoBoton;
+                
+                if (claseExtra) {
+                    btnEntero.classList.add(claseExtra);
+                    btnMedio.classList.add(claseExtra);
+                } else {
+                    btnEntero.classList.remove('agenda-mode');
+                    btnMedio.classList.remove('agenda-mode');
+                }
+            }
+            
+            return abierto;
+        }
+
+        function cerrarModal() {
+            document.getElementById('dynamic-modal').style.display = 'none';
+        }
+
+        // Ejecutar al cargar
+        document.addEventListener('DOMContentLoaded', actualizarEstado);
+
+        function pedirDomicilio(producto, precio) {
+            const abierto = actualizarEstado();
+            const accion = abierto ? `Quiero pedir el ${producto}` : `Hola, paso por aquí para dejar reservado el ${producto}`;
+            
+            let mensaje = `¡Hola, Barril Chickens! ${accion} ($${precio}). Mis datos son:\n\nNombre:\nDirección:\nBarrio:`;
+            window.open(`https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensaje)}`, '_blank');
+        }
+
+        function cotizarEvento() {
+            const mensaje = "¡Hola, Barril Chickens! Estoy interesado en una cotización para un evento. Me gustaría llevar la Experiencia Barril Chickens a mi fiesta. ¿Podrían darme más información?";
+            window.open(`https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensaje)}`, '_blank');
+        }
+    </script>
+</body>
+</html>
